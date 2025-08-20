@@ -59,40 +59,30 @@ def create_sample_data():
             print("No crops were created. Exiting.")
             return
         
-        # Create markets (Nepal coordinates)
+        # Create markets (no coordinates)
         markets_data = [
             {
                 'name': 'Kalimati Market',
-                'latitude': 27.7172,
-                'longitude': 85.3240,
                 'address': 'Kalimati, Kathmandu, Nepal',
                 'contact': '01-4270654'
             },
             {
                 'name': 'Baneshwor Market',
-                'latitude': 27.7172,
-                'longitude': 85.3240,
                 'address': 'Baneshwor, Kathmandu, Nepal',
                 'contact': '01-4470654'
             },
             {
                 'name': 'Pulchowk Market',
-                'latitude': 27.6789,
-                'longitude': 85.3188,
                 'address': 'Pulchowk, Lalitpur, Nepal',
                 'contact': '01-5520654'
             },
             {
                 'name': 'Bharatpur Market',
-                'latitude': 27.6833,
-                'longitude': 84.4333,
                 'address': 'Bharatpur, Chitwan, Nepal',
                 'contact': '056-521234'
             },
             {
                 'name': 'Pokhara Market',
-                'latitude': 28.2096,
-                'longitude': 83.9856,
                 'address': 'Pokhara, Kaski, Nepal',
                 'contact': '061-521234'
             }

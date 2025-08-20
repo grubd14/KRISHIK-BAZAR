@@ -36,7 +36,6 @@ urlpatterns = [
     
     # API endpoints
     path('api/', include(router.urls)),
-    path('api/search-prices/', views.search_prices, name='search_prices'),
     path('api/crops/', views.get_crops, name='get_crops'),
     path('api/markets/', views.get_markets, name='get_markets'),
 ]
