@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Krisik Bazar - नेपाली किसानको बजार</title>
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-gray-50">
+	{% include 'partials/nav.html' %}
+
+	<main class="min-h-screen">
+		{% block content %}{% endblock %}
+	</main>
+
+	{% include 'partials/components/toast.html' %}
+	{% include 'partials/components/modal.html' %}
+
+	<!-- Scripts -->
+	<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
+

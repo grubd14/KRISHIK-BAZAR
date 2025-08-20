@@ -1,0 +1,995 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krisik Bazar - नेपाली किसानको बजार</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #059669;
+            --primary-dark: #047857;
+            --secondary-color: #10b981;
+            --accent-color: #34d399;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            scroll-behavior: smooth;
+        }
+
+        .hero-bg {
+            background: radial-gradient(1200px circle at 10% 10%, rgba(255,255,255,0.15), transparent 40%),
+                        radial-gradient(1200px circle at 90% 10%, rgba(255,255,255,0.15), transparent 40%),
+                        linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .product-card { 
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 70%;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Page Transitions */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            box-shadow: var(--card-shadow);
+            transform: scale(1.03);
+        }
+
+        /* Testimonial Cards */
+        .testimonial-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Newsletter Background */
+        .newsletter-bg {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Form Styles */
+        .form-input {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+        }
+        
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        /* Button States */
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(5, 150, 105, 0.25);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1rem 1.5rem;
+            z-index: 50;
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 4px solid;
+        }
+        
+        .toast.success {
+            border-left-color: var(--primary-color);
+        }
+        
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding-left: 3rem;
+            padding-right: 1rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        /* Filter Dropdowns */
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:focus {
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 32rem;
+            width: 100%;
+            margin: 0 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Utility Classes */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .border-gradient {
+            border: 2px solid;
+            border-image: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) 1;
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(5, 150, 105, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .fab:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Card hover effects */
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        /* Section padding */
+        .section-padding {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-bg h1 {
+                font-size: 2.5rem;
+            }
+            
+            .feature-card {
+                margin-bottom: 1rem;
+            }
+            
+            .section-padding {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+            }
+            
+            .fab {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-green-600 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-leaf text-2xl"></i>
+                    <h1 class="text-2xl font-bold">Krisik Bazar</h1>
+                </div>
+                
+                <div class="hidden md:flex space-x-2">
+                    <a href="#" class="nav-link active" data-page="home">Home</a>
+                    <a href="#" class="nav-link" data-page="products">Products</a>
+                    <a href="#" class="nav-link" data-page="add-product">Add Product</a>
+                    <a href="#" class="nav-link" data-page="about">About</a>
+                    <a href="#" class="nav-link" data-page="contact">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div id="auth-buttons" class="hidden">
+                        <button id="login-btn" class="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-md hover:shadow-lg">
+                            Login
+                        </button>
+                        <button id="register-btn" class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 shadow-md hover:shadow-lg ml-2">
+                            Register
+                        </button>
+                    </div>
+                    
+                    <div id="user-menu" class="hidden items-center">
+                        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-semibold mr-2" id="user-avatar"></div>
+                        <span id="user-name" class="mr-3 hidden md:block"></span>
+                        <button id="logout-btn" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors shadow-md">
+                            Logout
+                        </button>
+                    </div>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#" class="nav-link active" data-page="home">Home</a>
+                    <a href="#" class="nav-link" data-page="products">Products</a>
+                    <a href="#" class="nav-link" data-page="add-product">Add Product</a>
+                    <a href="#" class="nav-link" data-page="about">About</a>
+                    <a href="#" class="nav-link" data-page="contact">Contact</a>
+                    <div class="pt-4 border-t border-green-500 mt-4">
+                        <div id="mobile-auth-buttons" class="flex flex-col space-y-3 hidden">
+                            <button id="mobile-login-btn" class="w-full bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                Login
+                            </button>
+                            <button id="mobile-register-btn" class="w-full bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                                Register
+                            </button>
+                        </div>
+                        
+                        <div id="mobile-user-menu" class="hidden">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-semibold mr-2" id="mobile-user-avatar"></div>
+                                    <span id="mobile-user-name"></span>
+                                </div>
+                                <button id="mobile-logout-btn" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors">
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <!-- Home Page -->
+        <div id="home-page" class="page active">
+            <!-- Hero Section -->
+            <section class="hero-bg text-white py-20">
+                <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+                    <h1 class="text-5xl font-bold mb-6">Krisik Bazar</h1>
+                    <p class="text-xl mb-8 max-w-2xl mx-auto">नेपाली किसानको बजार - Get the best prices for your crops with real-time market insights</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button id="hero-browse-btn" class="bg-white text-green-600 hover:bg-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+                            Browse Products
+                        </button>
+                        <button id="hero-add-btn" class="bg-green-500 text-white hover:bg-green-700 px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+                            Add Your Product
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="section-padding bg-white">
+                <div class="max-w-7xl mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Why Choose Krisik Bazar?</h2>
+                    <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Empowering Nepali farmers with transparent market information and fair pricing</p>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="feature-card text-center p-8">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-chart-line text-2xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Real-time Prices</h3>
+                            <p class="text-gray-600">Get up-to-date market prices for your crops across different regions</p>
+                        </div>
+                        <div class="feature-card text-center p-8">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-map-marker-alt text-2xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Market Locations</h3>
+                            <p class="text-gray-600">Find the nearest markets with the best prices and trading opportunities</p>
+                        </div>
+                        <div class="feature-card text-center p-8">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-users text-2xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-3">Community Driven</h3>
+                            <p class="text-gray-600">Farmers helping farmers with accurate price information and market insights</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="py-16 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="grid md:grid-cols-4 gap-8 text-center">
+                        <div class="stat-card">
+                            <h3 class="text-3xl font-bold text-green-600 mb-2">500+</h3>
+                            <p class="text-gray-600">Active Farmers</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-3xl font-bold text-green-600 mb-2">50+</h3>
+                            <p class="text-gray-600">Markets</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-3xl font-bold text-green-600 mb-2">1000+</h3>
+                            <p class="text-gray-600">Products</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-3xl font-bold text-green-600 mb-2">₹2M+</h3>
+                            <p class="text-gray-600">Value Traded</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- How it Works Section -->
+            <section class="section-padding bg-white">
+                <div class="max-w-7xl mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">How It Works</h2>
+                    <p class="text-gray-600 text-center mb-12 max-w-3xl mx-auto">Simple steps to get the best value for your agricultural products</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold text-green-600">1</div>
+                            <h3 class="text-xl font-semibold mb-3">Create Account</h3>
+                            <p class="text-gray-600">Sign up as a farmer or buyer to access our marketplace</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold text-green-600">2</div>
+                            <h3 class="text-xl font-semibold mb-3">List Products</h3>
+                            <p class="text-gray-600">Add your products with details and pricing information</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold text-green-600">3</div>
+                            <h3 class="text-xl font-semibold mb-3">Connect & Sell</h3>
+                            <p class="text-gray-600">Connect with buyers and get the best prices for your produce</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products-page" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Browse Products</h2>
+                <p class="text-gray-600 mb-8">Find the best agricultural products from local farmers</p>
+                
+                <!-- Search and Filter -->
+                <div class="mb-8 bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="search-container flex-1">
+                            <i class="search-icon fas fa-search"></i>
+                            <input type="text" id="search-input" placeholder="Search products..." 
+                                   class="search-input">
+                        </div>
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="grains">Grains</option>
+                            <option value="dairy">Dairy Products</option>
+                            <option value="spices">Spices</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <button id="search-btn" class="btn-primary whitespace-nowrap">
+                            <i class="fas fa-search mr-2"></i> Search
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Products Grid -->
+                <div id="products-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Products will be loaded here -->
+                </div>
+                
+                <!-- Loading Spinner -->
+                <div id="loading-spinner" class="hidden text-center py-12">
+                    <div class="loading-spinner mx-auto"></div>
+                    <p class="text-gray-600 mt-4">Loading products...</p>
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="no-results" class="hidden text-center py-12">
+                    <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
+                    <p class="text-gray-500">Try adjusting your search or filter criteria</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Product Page -->
+        <div id="add-product-page" class="page hidden">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Add New Product</h2>
+                <p class="text-gray-600 mb-8">List your agricultural products to reach more buyers</p>
+                
+                <div id="login-required" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg hidden">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-yellow-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">You need to <a href="#" data-page="login" class="font-medium underline text-yellow-700 hover:text-yellow-600">login</a> to add a product.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="add-product-form" class="bg-white p-8 rounded-xl shadow-sm">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+                            <input type="text" id="product-name" required 
+                                   class="form-input w-full" placeholder="Enter product name">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                            <select id="product-category" required class="form-input w-full">
+                                <option value="">Select Category</option>
+                                <option value="vegetables">Vegetables</option>
+                                <option value="fruits">Fruits</option>
+                                <option value="grains">Grains</option>
+                                <option value="dairy">Dairy</option>
+                                <option value="spices">Spices</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Quantity (kg) *</label>
+                            <input type="number" id="product-quantity" required min="0.1" step="0.1"
+                                   class="form-input w-full" placeholder="0.0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price per kg (₹) *</label>
+                            <input type="number" id="product-price" required min="0" step="0.01"
+                                   class="form-input w-full" placeholder="0.00">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="product-description" rows="4" 
+                                      class="form-input w-full" placeholder="Describe your product..."></textarea>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md">
+                                <div class="space-y-1 text-center">
+                                    <div class="flex text-sm text-gray-600">
+                                        <label for="product-image" class="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none">
+                                            <span>Upload an image</span>
+                                            <input id="product-image" type="file" class="sr-only" accept="image/*">
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <button type="submit" class="btn-primary w-full py-3 text-lg">
+                            <i class="fas fa-plus-circle mr-2"></i> Add Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="login-page" class="page hidden">
+            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full">
+                    <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+                            <p class="mt-2 text-gray-600">Access your farmer dashboard</p>
+                        </div>
+                        <form id="login-form" class="space-y-6">
+                            <div>
+                                <label for="login-email" class="block text-sm font-medium text-gray-700">Email address</label>
+                                <div class="mt-1">
+                                    <input id="login-email" name="email" type="email" required 
+                                           class="form-input w-full" placeholder="Enter your email">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                                <div class="mt-1">
+                                    <input id="login-password" name="password" type="password" required 
+                                           class="form-input w-full" placeholder="Enter your password">
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn-primary w-full py-3">
+                                    Sign in
+                                </button>
+                            </div>
+                            
+                            <div class="text-center">
+                                <a href="#" data-page="register" class="text-green-600 hover:text-green-500 font-medium">
+                                    Don't have an account? Sign up
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="register-page" class="page hidden">
+            <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md w-full">
+                    <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-extrabold text-gray-900">Create your account</h2>
+                            <p class="mt-2 text-gray-600">Join our community of farmers</p>
+                        </div>
+                        <form id="register-form" class="space-y-6">
+                            <div>
+                                <label for="register-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <div class="mt-1">
+                                    <input id="register-name" name="name" type="text" required 
+                                           class="form-input w-full" placeholder="Enter your full name">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="register-email" class="block text-sm font-medium text-gray-700">Email address</label>
+                                <div class="mt-1">
+                                    <input id="register-email" name="email" type="email" required 
+                                           class="form-input w-full" placeholder="Enter your email">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
+                                <div class="mt-1">
+                                    <input id="register-password" name="password" type="password" required 
+                                           class="form-input w-full" placeholder="Create a password">
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn-primary w-full py-3">
+                                    Sign up
+                                </button>
+                            </div>
+                            
+                            <div class="text-center">
+                                <a href="#" data-page="login" class="text-green-600 hover:text-green-500 font-medium">
+                                    Already have an account? Sign in
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="about-page" class="page hidden">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">About Krisik Bazar</h2>
+                <p class="text-gray-600 mb-8">Empowering Nepali farmers through technology</p>
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <div class="prose max-w-none">
+                        <p class="text-gray-600 mb-6">
+                            Krisik Bazar is a platform designed to help Nepali farmers get the best prices for their crops. 
+                            Our mission is to empower farmers with transparent market information and reduce the exploitation 
+                            by middlemen.
+                        </p>
+                        <p class="text-gray-600 mb-6">
+                            By providing real-time price information and market locations, we help farmers make informed 
+                            decisions about where to sell their products for maximum profit.
+                        </p>
+                        <div class="bg-gray-50 p-6 rounded-lg mt-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Our Vision</h3>
+                            <p class="text-gray-600">To create a fair and transparent agricultural marketplace that benefits both farmers and buyers across Nepal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact-page" class="page hidden">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Contact Us</h2>
+                <p class="text-gray-600 mb-8">We'd love to hear from you</p>
+                <form id="contact-form" class="bg-white p-8 rounded-xl shadow-sm">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                            <input type="text" id="contact-name" required 
+                                   class="form-input w-full" placeholder="Your name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                            <input type="email" id="contact-email" required 
+                                   class="form-input w-full" placeholder="Your email address">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Message *</label>
+                            <textarea id="contact-message" rows="5" required 
+                                      class="form-input w-full" placeholder="How can we help you?"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <button type="submit" class="btn-primary w-full py-3">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="grid md:grid-cols-3 gap-8 mt-12">
+                    <div class="text-center p-6 bg-white rounded-xl shadow-sm">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-map-marker-alt text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Address</h3>
+                        <p class="text-gray-600">Kathmandu, Nepal</p>
+                    </div>
+                    <div class="text-center p-6 bg-white rounded-xl shadow-sm">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-phone text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Phone</h3>
+                        <p class="text-gray-600">+977 1 4123456</p>
+                    </div>
+                    <div class="text-center p-6 bg-white rounded-xl shadow-sm">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-envelope text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Email</h3>
+                        <p class="text-gray-600">info@krisikbazar.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Krisik Bazar</h3>
+                    <p class="text-gray-400">Empowering Nepali farmers with transparent market information and fair pricing.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" data-page="home" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#" data-page="products" class="text-gray-400 hover:text-white transition-colors">Products</a></li>
+                        <li><a href="#" data-page="about" class="text-gray-400 hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" data-page="contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">FAQs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect With Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Krisik Bazar. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast hidden">
+        <i id="toast-icon" class="text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium"></span>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 id="modal-title" class="text-2xl font-bold text-gray-800"></h3>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+                <div id="modal-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <a href="#" data-page="add-product" class="fab hidden md:flex">
+        <i class="fas fa-plus text-xl"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/script.js' %}"></script>
+
+</body>
+</html>
